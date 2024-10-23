@@ -14,45 +14,49 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     final themeData = Theme.of(context);
     return Scaffold(
       appBar: const TMAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 42,
-            ),
-            Text(
-              'Add New Task',
-              style: themeData.textTheme.titleLarge,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Title',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 42,
               ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextFormField(
-              maxLines: 5,
-              decoration: const InputDecoration(
-                hintText: 'Description',
+              Text(
+                'Add New Task',
+                style: themeData.textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Icon(
-                Icons.arrow_circle_right_outlined,
+              const SizedBox(
+                height: 24,
               ),
-            ),
-          ],
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Title',
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextFormField(
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  hintText: 'Description',
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Icon(
+                  Icons.arrow_circle_right_outlined,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
