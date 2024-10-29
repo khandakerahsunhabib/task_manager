@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
+import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -148,10 +151,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           const SizedBox(
             height: 24,
           ),
-          ElevatedButton(
-            onPressed: _onTapNextButton,
-            child: const Icon(
-              Icons.arrow_circle_right_outlined,
+          Visibility(
+            visible: !_inProgress,
+            replacement: const CenteredCircularProgressIndicator(),
+            child: ElevatedButton(
+              onPressed: _onTapNextButton,
+              child: const Icon(
+                Icons.arrow_circle_right_outlined,
+              ),
             ),
           ),
         ],
@@ -186,21 +193,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!_formkey.currentState!.validate()) {
       return;
     }
+    _signUp();
   }
 
   Future<void> _signUp() async {
     _inProgress = true;
     setState(() {});
-    NetworkResponse response =
-        await NetworkCaller.postRequest(url: Urls.registration);
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim(),
+      "password": _passwordTEController.text
+    };
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.registration,
+      body: requestBody,
+    );
     _inProgress = false;
     setState(() {});
     if (response.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User created successfully!')));
+      showSnackBarMessage(context, 'New user created');
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.errorMessage)));
+      showSnackBarMessage(context, response.errorMessage, true);
     }
   }
 
