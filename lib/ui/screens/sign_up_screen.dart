@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/sign_in_screen.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
@@ -12,6 +14,15 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _firstNameTEController = TextEditingController();
+  final TextEditingController _lastNameTEController = TextEditingController();
+  final TextEditingController _mobileTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+  bool _inProgress = false;
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -56,57 +67,95 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buildSignUpForm() {
-    return Column(
-      children: [
-        TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            hintText: 'Email',
+    return Form(
+      key: _formkey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _emailTEController,
+            keyboardType: TextInputType.emailAddress,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: const InputDecoration(
+              hintText: 'Email',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter valid email';
+              }
+            },
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'First name',
+          const SizedBox(
+            height: 8,
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Last name',
+          TextFormField(
+            controller: _firstNameTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: const InputDecoration(
+              hintText: 'First name',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter first name';
+              }
+            },
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          keyboardType: TextInputType.phone,
-          decoration: const InputDecoration(
-            hintText: 'Mobile',
+          const SizedBox(
+            height: 8,
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Password',
+          TextFormField(
+            controller: _lastNameTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: const InputDecoration(
+              hintText: 'Last name',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter last name';
+              }
+            },
           ),
-        ),
-        const SizedBox(
-          height: 24,
-        ),
-        ElevatedButton(
-          onPressed: _onTapNextButton,
-          child: const Icon(
-            Icons.arrow_circle_right_outlined,
+          const SizedBox(
+            height: 8,
           ),
-        ),
-      ],
+          TextFormField(
+            controller: _mobileTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            keyboardType: TextInputType.phone,
+            decoration: const InputDecoration(
+              hintText: 'Mobile',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter mobile number';
+              }
+            },
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          TextFormField(
+            controller: _passwordTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: const InputDecoration(
+              hintText: 'Password',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter password';
+              }
+            },
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          ElevatedButton(
+            onPressed: _onTapNextButton,
+            child: const Icon(
+              Icons.arrow_circle_right_outlined,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -134,10 +183,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onTapNextButton() {
-    // TODO: implement on tap next button
+    if (!_formkey.currentState!.validate()) {
+      return;
+    }
+  }
+
+  Future<void> _signUp() async {
+    _inProgress = true;
+    setState(() {});
+    NetworkResponse response =
+        await NetworkCaller.postRequest(url: Urls.registration);
+    _inProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User created successfully!')));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.errorMessage)));
+    }
   }
 
   void _onTapSignIn() {
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _firstNameTEController.dispose();
+    _lastNameTEController.dispose();
+    _mobileTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
   }
 }
