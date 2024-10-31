@@ -14,6 +14,11 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+  bool _inProgress = false;
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -27,22 +32,16 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 82,
-                ),
+                const SizedBox(height: 82),
                 Text(
                   'Get Started With',
                   style: textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 _buildSignInForm(),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 Center(
                   child: Column(
                     children: [
@@ -71,33 +70,46 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget _buildSignInForm() {
-    return Column(
-      children: [
-        TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            hintText: 'Email',
+    return Form(
+      key: _formkey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _emailTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: 'Email',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter valid email';
+              }
+            },
           ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        TextFormField(
-          obscureText: true,
-          decoration: const InputDecoration(
-            hintText: 'Password',
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _passwordTEController,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            obscureText: true,
+            decoration: const InputDecoration(
+              hintText: 'Password',
+            ),
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter password';
+              }
+            },
           ),
-        ),
-        const SizedBox(
-          height: 24,
-        ),
-        ElevatedButton(
-          onPressed: _onTapNextButton,
-          child: const Icon(
-            Icons.arrow_circle_right_outlined,
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _onTapNextButton,
+            child: const Icon(
+              Icons.arrow_circle_right_outlined,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -125,13 +137,16 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapNextButton() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MainBottomNavbarScreen(),
-      ),
-      (predicate) => false,
-    );
+    if (_formkey.currentState!.validate()) {
+      _signIn();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainBottomNavbarScreen(),
+        ),
+        (predicate) => false,
+      );
+    }
   }
 
   void _onTapForgotPasswordButton() {
@@ -151,4 +166,13 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {}
 }

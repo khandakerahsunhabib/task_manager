@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
@@ -39,22 +38,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 60,
-                ),
+                const SizedBox(height: 60),
                 Text(
                   'Join With Us',
                   style: textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 _buildSignUpForm(),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 Center(
                   child: _buildHaveAccountSection(),
                 ),
@@ -87,9 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             },
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: _firstNameTEController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -102,9 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             },
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: _lastNameTEController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -117,9 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             },
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: _mobileTEController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -133,9 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             },
           ),
-          const SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: _passwordTEController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -148,9 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             },
           ),
-          const SizedBox(
-            height: 24,
-          ),
+          const SizedBox(height: 24),
           Visibility(
             visible: !_inProgress,
             replacement: const CenteredCircularProgressIndicator(),
@@ -213,10 +196,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _inProgress = false;
     setState(() {});
     if (response.isSuccess) {
+      _clearTextFields();
       showSnackBarMessage(context, 'New user created');
     } else {
       showSnackBarMessage(context, response.errorMessage, true);
     }
+  }
+
+  void _clearTextFields() {
+    _emailTEController.clear();
+    _firstNameTEController.clear();
+    _lastNameTEController.clear();
+    _mobileTEController.clear();
+    _passwordTEController.clear();
   }
 
   void _onTapSignIn() {
