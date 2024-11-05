@@ -1,10 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -139,13 +143,6 @@ class _SignInScreenState extends State<SignInScreen> {
   void _onTapNextButton() {
     if (_formkey.currentState!.validate()) {
       _signIn();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MainBottomNavbarScreen(),
-        ),
-        (predicate) => false,
-      );
     }
   }
 
@@ -174,5 +171,29 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  Future<void> _signIn() async {}
+  Future<void> _signIn() async {
+    _inProgress = true;
+    setState(() {});
+    Map<String, dynamic> requestBody = {
+      'email': _emailTEController.text.trim(),
+      'password': _passwordTEController.text,
+    };
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.login,
+      body: requestBody,
+    );
+    _inProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainBottomNavbarScreen(),
+        ),
+        (value) => false,
+      );
+    } else {
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+  }
 }
