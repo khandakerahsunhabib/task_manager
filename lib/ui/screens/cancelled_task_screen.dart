@@ -8,7 +8,7 @@ class CancelledTaskScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) {
-        return const TaskCard();
+        // return const TaskCard();
       },
       separatorBuilder: (context, index) {
         return const SizedBox(
