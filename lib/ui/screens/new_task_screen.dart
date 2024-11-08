@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/task_list_model.dart';
 import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/task_status_count_model.dart';
+import 'package:task_manager/data/models/task_status_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
@@ -19,41 +21,51 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _getNewTaskListInProgress = false;
+  bool _taskStatusCountListInProgress = false;
   List<TaskModel> _newTaskList = [];
+  List<TaskStatusModel> _taskStatusCountList = [];
 
   @override
   void initState() {
     super.initState();
     _getNewTaskList();
+    _getTaskStatusCount();
   }
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context).textTheme;
     return Scaffold(
-      body: Column(
-        children: [
-          _buildSummarySection(themeData),
-          Expanded(
-            child: Visibility(
-              visible: !_getNewTaskListInProgress,
-              replacement: CenteredCircularProgressIndicator(),
-              child: ListView.separated(
-                itemCount: _newTaskList.length,
-                itemBuilder: (context, index) {
-                  return TaskCard(
-                    taskModel: _newTaskList[index],
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 8,
-                  );
-                },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _getNewTaskList();
+          _getTaskStatusCount();
+        },
+        child: Column(
+          children: [
+            _buildSummarySection(themeData),
+            Expanded(
+              child: Visibility(
+                visible: !_getNewTaskListInProgress,
+                replacement: CenteredCircularProgressIndicator(),
+                child: ListView.separated(
+                  itemCount: _newTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskModel: _newTaskList[index],
+                      onRefreshList: _getNewTaskList,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 8,
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         shape: const StadiumBorder(),
@@ -65,37 +77,33 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  Padding _buildSummarySection(TextTheme themeData) {
+  Widget _buildSummarySection(TextTheme themeData) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            TaskSummaryCard(
-              themeData: themeData,
-              title: 'New',
-              count: 09,
-            ),
-            TaskSummaryCard(
-              themeData: themeData,
-              title: 'Completed',
-              count: 09,
-            ),
-            TaskSummaryCard(
-              themeData: themeData,
-              title: 'Cancelled',
-              count: 09,
-            ),
-            TaskSummaryCard(
-              themeData: themeData,
-              title: 'Progress',
-              count: 09,
-            ),
-          ],
-        ),
+      child: Visibility(
+        visible: !_taskStatusCountListInProgress,
+        replacement: CenteredCircularProgressIndicator(),
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _getTaskSummaryCardList(),
+            )),
       ),
     );
+  }
+
+  List<TaskSummaryCard> _getTaskSummaryCardList() {
+    List<TaskSummaryCard> taskSummaryCardList = [];
+    for (TaskStatusModel t in _taskStatusCountList) {
+      taskSummaryCardList.add(
+        TaskSummaryCard(
+          themeData: TextTheme(titleLarge: TextStyle(fontSize: 18)),
+          title: t.sId!,
+          count: t.sum ?? 0,
+        ),
+      );
+    }
+    return taskSummaryCardList;
   }
 
   void _onTapAddFAB() async {
@@ -124,6 +132,23 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       showSnackBarMessage(context, response.errorMessage, true);
     }
     _getNewTaskListInProgress = false;
+    setState(() {});
+  }
+
+  Future<void> _getTaskStatusCount() async {
+    _taskStatusCountList.clear();
+    _taskStatusCountListInProgress = true;
+    setState(() {});
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(url: Urls.taskStatusCount);
+    if (response.isSuccess) {
+      final TaskStatusCountModel taskStatusCountModel =
+          TaskStatusCountModel.fromJson(response.responseData);
+      _taskStatusCountList = taskStatusCountModel.taskStatusCountList ?? [];
+    } else {
+      showSnackBarMessage(context, response.errorMessage, true);
+    }
+    _taskStatusCountListInProgress = false;
     setState(() {});
   }
 }

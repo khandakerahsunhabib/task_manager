@@ -38,6 +38,7 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
           itemBuilder: (context, index) {
             return TaskCard(
               taskModel: _cancelledTaskList[index],
+              onRefreshList: _getCancelledTaskList,
             );
           },
           separatorBuilder: (context, index) {
