@@ -19,12 +19,12 @@ class UserModel {
       this.createdDate});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    email = json['email'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobile = json['mobile'];
-    createdDate = json['createdDate'];
+    sId = json['_id'] ?? '';
+    email = json['email'] ?? '';
+    firstName = json['firstName'] ?? '';
+    lastName = json['lastName'] ?? '';
+    mobile = json['mobile'] ?? '';
+    createdDate = json['createdDate'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

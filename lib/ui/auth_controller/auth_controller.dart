@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/data/models/user_model.dart';
 
@@ -26,7 +25,7 @@ class AuthController {
   static Future<void> saveUserData(UserModel userModel) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString(
-        _userDataKey, jsonEncode(userModel.toString()));
+        _userDataKey, jsonEncode(userModel.toJson()));
     userData = userModel;
   }
 
