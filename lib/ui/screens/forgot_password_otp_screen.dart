@@ -1,20 +1,29 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/reset_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
+import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
 class ForgotPasswordOtpScreen extends StatefulWidget {
-  const ForgotPasswordOtpScreen({super.key});
+  const ForgotPasswordOtpScreen({super.key, required this.email});
 
   @override
   State<ForgotPasswordOtpScreen> createState() =>
       _ForgotPasswordOtpScreenState();
+  final String email;
 }
 
 class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
+  final TextEditingController _pinFieldTEController = TextEditingController();
+  bool _pinVerificationInProgress = false;
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -49,7 +58,7 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
                 const SizedBox(
                   height: 24,
                 ),
-                _buildVerifyEmailForm(),
+                _buildVerifyPinField(),
                 const SizedBox(
                   height: 24,
                 ),
@@ -67,10 +76,11 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
     );
   }
 
-  Widget _buildVerifyEmailForm() {
+  Widget _buildVerifyPinField() {
     return Column(
       children: [
         PinCodeTextField(
+          controller: _pinFieldTEController,
           length: 6,
           animationType: AnimationType.fade,
           keyboardType: TextInputType.number,
@@ -91,10 +101,14 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
         const SizedBox(
           height: 8,
         ),
-        ElevatedButton(
-          onPressed: _onTapNextButton,
-          child: const Icon(
-            Icons.arrow_circle_right_outlined,
+        Visibility(
+          visible: !_pinVerificationInProgress,
+          replacement: CenteredCircularProgressIndicator(),
+          child: ElevatedButton(
+            onPressed: _onTapNextButton,
+            child: const Icon(
+              Icons.arrow_circle_right_outlined,
+            ),
           ),
         ),
       ],
@@ -125,12 +139,27 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
   }
 
   void _onTapNextButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ResetPasswordScreen(),
-      ),
-    );
+    _verifyByOtp(widget.email, int.parse(_pinFieldTEController.text));
+  }
+
+  Future<void> _verifyByOtp(String email, int otp) async {
+    _pinVerificationInProgress = true;
+    setState(() {});
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(url: Urls.verifyByOtp(email, otp));
+    if (response.isSuccess) {
+      _pinVerificationInProgress = false;
+      setState(() {});
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResetPasswordScreen(
+                    email: email,
+                    otp: otp,
+                  )));
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
   }
 
   void _onTapSignIn() {
