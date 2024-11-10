@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:task_manager/app.dart';
 import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/ui/auth_controller/auth_controller.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 
 class NetworkCaller {

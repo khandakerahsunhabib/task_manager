@@ -5,7 +5,7 @@ import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
-import 'package:task_manager/ui/auth_controller/auth_controller.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snackbar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';

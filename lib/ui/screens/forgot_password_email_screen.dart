@@ -12,6 +12,8 @@ import 'package:task_manager/ui/widgets/snackbar_message.dart';
 class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
 
+  static const String name = '/forgotPasswordEmailScreen';
+
   @override
   State<ForgotPasswordEmailScreen> createState() =>
       _ForgotPasswordEmailScreenState();
