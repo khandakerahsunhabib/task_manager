@@ -6,6 +6,7 @@ import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
+import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
@@ -20,7 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  bool _inProgress = false;
+  final SignInController signInController = Get.find<SignInController>();
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +108,14 @@ class _SignInScreenState extends State<SignInScreen> {
             },
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _onTapNextButton,
-            child: const Icon(
-              Icons.arrow_circle_right_outlined,
+          Visibility(
+            visible: !signInController.inProgress,
+            replacement: CenteredCircularProgressIndicator(),
+            child: ElevatedButton(
+              onPressed: _onTapNextButton,
+              child: const Icon(
+                Icons.arrow_circle_right_outlined,
+              ),
             ),
           ),
         ],
@@ -147,6 +152,18 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  Future<void> _signIn() async {
+    final bool result = await signInController.signIn(
+      _emailTEController.text.trim(),
+      _passwordTEController.text,
+    );
+    if (result) {
+      Get.offAllNamed(MainBottomNavbarScreen.name);
+    } else {
+      showSnackBarMessage(context, signInController.errorMessage!, true);
+    }
+  }
+
   void _onTapForgotPasswordButton() {
     Get.toNamed(ForgotPasswordEmailScreen.name);
   }
@@ -160,18 +177,5 @@ class _SignInScreenState extends State<SignInScreen> {
     _emailTEController.dispose();
     _passwordTEController.dispose();
     super.dispose();
-  }
-
-  Future<void> _signIn() async {
-    final bool result = await Get.find<SignInController>().signIn(
-      _emailTEController.text.trim(),
-      _passwordTEController.text,
-    );
-    if (result) {
-      Get.offAllNamed(MainBottomNavbarScreen.name);
-    } else {
-      showSnackBarMessage(
-          context, Get.find<SignInController>().errorMessage!, true);
-    }
   }
 }
