@@ -15,6 +15,8 @@ import 'package:task_manager/ui/widgets/task_summary_card.dart';
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
 
+  static const String name = '/new_task_screen';
+
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
 }
@@ -109,14 +111,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   void _onTapAddFAB() async {
-    final bool? shouldRefresh = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AddNewTaskScreen(),
-      ),
-    );
+    final bool? shouldRefresh =
+        await Get.toNamed(AddNewTaskScreen.name) as bool?;
     if (shouldRefresh == true) {
-      _getNewTaskList();
+      _newTaskListController.getNewTaskList();
     }
   }
 
