@@ -80,6 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (value?.isEmpty ?? true) {
                 return 'Enter valid email';
               }
+              return null;
             },
           ),
           const SizedBox(height: 8),
@@ -93,6 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (value?.isEmpty ?? true) {
                 return 'Enter first name';
               }
+              return null;
             },
           ),
           const SizedBox(height: 8),
@@ -106,6 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (value?.isEmpty ?? true) {
                 return 'Enter last name';
               }
+              return null;
             },
           ),
           const SizedBox(height: 8),
@@ -120,6 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (value?.isEmpty ?? true) {
                 return 'Enter mobile number';
               }
+              return null;
             },
           ),
           const SizedBox(height: 8),
@@ -133,6 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               if (value?.isEmpty ?? true) {
                 return 'Enter password';
               }
+              return null;
             },
           ),
           const SizedBox(height: 24),
