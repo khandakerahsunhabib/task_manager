@@ -8,6 +8,8 @@ import 'package:task_manager/ui/widgets/task_card.dart';
 class ProgressTaskScreen extends StatefulWidget {
   const ProgressTaskScreen({super.key});
 
+  static const String name = '/progress_task_screen';
+
   @override
   State<ProgressTaskScreen> createState() => _ProgressTaskScreenState();
 }

@@ -1,17 +1,15 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utils/urls.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/controllers/profile_controller.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snackbar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  static const String name = '/profile';
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -25,9 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  XFile? _selectedImage;
-
-  bool _updateProfileInProgress = false;
+  final ProfileController _profileController = Get.find<ProfileController>();
 
   @override
   void initState() {
@@ -131,20 +127,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Visibility(
-                  visible: !_updateProfileInProgress,
-                  replacement: CenteredCircularProgressIndicator(),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formkey.currentState!.validate()) {
-                        _updateProfile();
-                      }
-                    },
-                    child: const Icon(
-                      Icons.arrow_circle_right_outlined,
+                GetBuilder<ProfileController>(builder: (controller) {
+                  return Visibility(
+                    visible: !controller.inProgress,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formkey.currentState!.validate()) {
+                          _updateProfile();
+                        }
+                      },
+                      child: const Icon(
+                        Icons.arrow_circle_right_outlined,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
           ),
@@ -154,90 +152,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    _updateProfileInProgress = true;
-    setState(() {});
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _phoneTEController.text.trim(),
-    };
-    if (_passwordTEController.text.isNotEmpty) {
-      requestBody['password'] = _passwordTEController.text;
-    }
-    if (_selectedImage != null) {
-      List<int> imageBytes = await _selectedImage!.readAsBytes();
-      String convertedImage = base64Encode(imageBytes);
-      requestBody['photo'] = convertedImage;
-    }
-    final NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.profileUpdate,
-      body: requestBody,
+    final bool result = await _profileController.updateProfile(
+      _emailTEController.text.trim(),
+      _firstNameTEController.text.trim(),
+      _lastNameTEController.text.trim(),
+      _phoneTEController.text.trim(),
+      _passwordTEController.text,
     );
-    _updateProfileInProgress = false;
-    setState(() {});
-    if (response.isSuccess) {
-      UserModel userModel = UserModel.fromJson(requestBody);
-      AuthController.saveUserData(userModel);
+    if (result) {
       showSnackBarMessage(context, 'Profile has been updated!');
     } else {
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, _profileController.errorMessage!, true);
     }
   }
 
   Widget _buildPhotoPicker() {
-    return GestureDetector(
-      onTap: _selectImage,
-      child: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.white,
-        ),
-        child: Row(
-          children: [
-            Container(
-              height: 50,
-              width: 100,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  bottomLeft: Radius.circular(5),
-                ),
-                color: Colors.grey,
-              ),
-              child: const Text(
-                'Photo',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+    return GetBuilder<ProfileController>(
+      builder: (controller) {
+        return GestureDetector(
+          onTap: controller.selectImage,
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
             ),
-            const SizedBox(width: 8),
-            Text(_getSelectedPhotoTitle())
-          ],
-        ),
-      ),
+            child: GetBuilder<ProfileController>(builder: (controller) {
+              return Row(
+                children: [
+                  Container(
+                    height: 50,
+                    width: 100,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        bottomLeft: Radius.circular(5),
+                      ),
+                      color: Colors.grey,
+                    ),
+                    child: const Text(
+                      'Photo',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(controller.getSelectedPhotoTitle())
+                ],
+              );
+            }),
+          ),
+        );
+      },
     );
-  }
-
-  String _getSelectedPhotoTitle() {
-    if (_selectedImage != null) {
-      return _selectedImage!.name;
-    }
-    return 'Select Photo';
-  }
-
-  Future<void> _selectImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    XFile? pickedImage =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      _selectedImage = pickedImage;
-      setState(() {});
-    }
   }
 }

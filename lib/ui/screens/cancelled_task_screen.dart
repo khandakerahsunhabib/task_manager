@@ -8,6 +8,8 @@ import 'package:task_manager/ui/widgets/task_card.dart';
 class CancelledTaskScreen extends StatefulWidget {
   const CancelledTaskScreen({super.key});
 
+  static const String name = '/cancelled_task_screen';
+
   @override
   State<CancelledTaskScreen> createState() => _CancelledTaskScreenState();
 }

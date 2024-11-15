@@ -28,11 +28,11 @@ class CompletedTaskController extends GetxController {
       final TaskListModel taskListModel =
           TaskListModel.fromJson(response.responseData);
       _completedTaskList = taskListModel.taskList ?? [];
-      _inProgress = false;
-      update();
     } else {
       _errorMassage = response.errorMessage;
     }
+    _inProgress = false;
+    update();
     return isSuccess;
   }
 }

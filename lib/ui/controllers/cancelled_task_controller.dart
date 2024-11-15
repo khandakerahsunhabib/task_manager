@@ -28,11 +28,11 @@ class CancelledTaskController extends GetxController {
           TaskListModel.fromJson(response.responseData);
       _cancelledTaskList = taskListModel.taskList ?? [];
       isSuccess = true;
-      _inProgress = false;
-      update();
     } else {
       _errorMessage = response.errorMessage;
     }
+    _inProgress = false;
+    update();
     return isSuccess;
   }
 }
