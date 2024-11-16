@@ -117,9 +117,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
   Future<void> _addNewTask() async {
     final bool result = await _addNewTaskController.addNewTask(
-        _titleTEController.text.trim(),
-        _descriptionTEController.text.trim(),
-        'New');
+      _titleTEController.text.trim(),
+      _descriptionTEController.text.trim(),
+      'New',
+    );
     if (result) {
       _addNewTaskController.shouldRefreshPreviousPage = true;
       showSnackBarMessage(context, 'New task added');

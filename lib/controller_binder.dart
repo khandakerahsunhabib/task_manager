@@ -8,12 +8,14 @@ import 'package:task_manager/ui/controllers/profile_controller.dart';
 import 'package:task_manager/ui/controllers/progress_task_controller.dart';
 import 'package:task_manager/ui/controllers/sign_in_controller.dart';
 import 'package:task_manager/ui/controllers/sign_up_controller.dart';
+import 'package:task_manager/ui/controllers/task_card_controller.dart';
 
 class ControllerBinder extends Bindings {
   @override
   void dependencies() {
     Get.put(SignInController());
     Get.put(SignUpController());
+    Get.put(TaskCardController());
     Get.put(NewTaskListController());
     Get.put(AddNewTaskController());
     Get.put(CompletedTaskController());

@@ -57,7 +57,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
 
   Future<void> _getCompletedTaskList() async {
     bool result = await _completedTaskController.getCompletedTaskList();
-    if (!result) {
+    if (result == false) {
       showSnackBarMessage(
           context, _completedTaskController.errorMessage!, true);
     }

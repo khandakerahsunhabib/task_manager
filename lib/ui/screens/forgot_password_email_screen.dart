@@ -152,6 +152,6 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   }
 
   void _onTapSignIn() {
-    Navigator.pop(context);
+    Get.back();
   }
 }

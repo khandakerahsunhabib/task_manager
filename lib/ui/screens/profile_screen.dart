@@ -210,4 +210,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _firstNameTEController.dispose();
+    _lastNameTEController.dispose();
+    _phoneTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
+  }
 }
