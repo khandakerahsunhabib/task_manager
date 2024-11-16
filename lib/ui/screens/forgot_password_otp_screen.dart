@@ -11,17 +11,17 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
 class ForgotPasswordOtpScreen extends StatefulWidget {
-  const ForgotPasswordOtpScreen({super.key, required this.email});
+  const ForgotPasswordOtpScreen({super.key});
 
   @override
   State<ForgotPasswordOtpScreen> createState() =>
       _ForgotPasswordOtpScreenState();
-  final String email;
   static const String name = '/forgot_password_otp_screen';
 }
 
 class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
   final TextEditingController _pinFieldTEController = TextEditingController();
+  String email = Get.arguments.toString();
   final PasswordResetController _passwordResetController =
       Get.find<PasswordResetController>();
 
@@ -144,16 +144,16 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
   }
 
   void _onTapNextButton() {
-    _verifyByOtp(widget.email);
+    _verifyByOtp(email);
   }
 
   Future<void> _verifyByOtp(String email) async {
+    int otp = int.parse(_pinFieldTEController.text);
     final bool result = await _passwordResetController.verifyByOtp(
         email, int.parse(_pinFieldTEController.text));
     if (result) {
-      Get.to(ResetPasswordScreen(
-          email: widget.email,
-          otp: int.parse(_pinFieldTEController.text.trim())));
+      Get.toNamed(ResetPasswordScreen.name,
+          arguments: {"email": email, "otp": otp});
     } else {
       showSnackBarMessage(
           context, _passwordResetController.errorMessage!, true);

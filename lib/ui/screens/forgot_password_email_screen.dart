@@ -143,7 +143,8 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
         .getOtpByEmail(_emailTEController.text.trim());
     if (result) {
       showSnackBarMessage(context, _passwordResetController.successMessage!);
-      Get.to(ForgotPasswordOtpScreen(email: _emailTEController.text.trim()));
+      Get.toNamed(ForgotPasswordOtpScreen.name,
+          arguments: _emailTEController.text.trim());
     } else {
       showSnackBarMessage(
           context, _passwordResetController.errorMessage!, true);

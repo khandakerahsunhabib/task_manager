@@ -53,10 +53,8 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         ProgressTaskScreen.name: (context) => ProgressTaskScreen(),
         ForgotPasswordEmailScreen.name: (context) =>
             ForgotPasswordEmailScreen(),
-        ForgotPasswordOtpScreen.name: (context) =>
-            ForgotPasswordOtpScreen(email: ''),
-        ResetPasswordScreen.name: (context) =>
-            ResetPasswordScreen(email: '', otp: 0),
+        ForgotPasswordOtpScreen.name: (context) => ForgotPasswordOtpScreen(),
+        ResetPasswordScreen.name: (context) => ResetPasswordScreen(),
       },
     );
   }

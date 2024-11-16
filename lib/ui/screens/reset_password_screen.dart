@@ -9,13 +9,10 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snackbar_message.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen(
-      {super.key, required this.email, required this.otp});
+  const ResetPasswordScreen({super.key});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
-  final String email;
-  final int otp;
   static const String name = '/reset_password_screen';
 }
 
@@ -27,6 +24,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final PasswordResetController _passwordResetController =
       Get.find<PasswordResetController>();
+
+  Map<String, dynamic> arguments = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +164,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   Future<void> _setPassword() async {
     final bool result = await _passwordResetController.setPassword(
-        widget.email, widget.otp, _passwordTEController.text);
+        arguments['email'], arguments['otp'], _passwordTEController.text);
     if (result) {
       showSnackBarMessage(context, _passwordResetController.successMessage!);
     } else {
