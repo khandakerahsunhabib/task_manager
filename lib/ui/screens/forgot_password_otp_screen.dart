@@ -133,7 +133,7 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
         children: [
           TextSpan(
             text: 'Sign In',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.themeColor,
             ),
             recognizer: TapGestureRecognizer()..onTap = _onTapSignIn,

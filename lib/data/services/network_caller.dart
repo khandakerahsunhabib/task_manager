@@ -87,9 +87,7 @@ class NetworkCaller {
   }
 
   static void _moveToLoginScreen() {
-    Navigator.pushAndRemoveUntil(
-        TaskManagerApp.navigatorKey.currentContext!,
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
-        (p) => false);
+    Navigator.pushAndRemoveUntil(TaskManagerApp.navigatorKey.currentContext!,
+        MaterialPageRoute(builder: (context) => SignInScreen()), (p) => false);
   }
 }

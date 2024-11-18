@@ -122,7 +122,7 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
         children: [
           TextSpan(
             text: 'Sign In',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.themeColor,
             ),
             recognizer: TapGestureRecognizer()..onTap = _onTapSignIn,

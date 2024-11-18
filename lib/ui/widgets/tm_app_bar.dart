@@ -61,7 +61,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
+                    builder: (context) => SignInScreen(),
                   ),
                   (predicate) => false,
                 );

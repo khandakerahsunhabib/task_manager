@@ -41,7 +41,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       initialRoute: SplashScreen.name,
       routes: {
         SplashScreen.name: (context) => const SplashScreen(),
-        SignInScreen.name: (context) => const SignInScreen(),
+        SignInScreen.name: (context) => SignInScreen(),
         MainBottomNavbarScreen.name: (context) =>
             const MainBottomNavbarScreen(),
         ProfileScreen.name: (context) => ProfileScreen(),
@@ -83,19 +83,15 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       hintStyle: const TextStyle(
         fontWeight: FontWeight.w300,
       ),
-      fillColor: Colors.white,
-      filled: true,
-      border: _inputBorder(),
-      enabledBorder: _inputBorder(),
-      errorBorder: _inputBorder(),
-      focusedBorder: _inputBorder(),
+      border: _underLineInputBorder(),
+      enabledBorder: _underLineInputBorder(),
+      errorBorder: _underLineInputBorder(),
+      focusedBorder: _underLineInputBorder(),
     );
   }
 
-  OutlineInputBorder _inputBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    );
+  UnderlineInputBorder _underLineInputBorder() {
+    return UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey, width: 2));
   }
 }

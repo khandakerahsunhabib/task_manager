@@ -152,7 +152,7 @@ class _TaskCardState extends State<TaskCard> {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(
+        side: BorderSide(
           color: AppColors.themeColor,
         ),
       ),

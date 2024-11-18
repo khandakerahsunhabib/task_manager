@@ -169,7 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           TextSpan(
             text: 'Sign In',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.themeColor,
             ),
             recognizer: TapGestureRecognizer()..onTap = _onTapSignIn,
