@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/profile_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
@@ -21,12 +22,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
           if (isProfileOpened) {
             return;
           }
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ProfileScreen(),
-            ),
-          );
+          Get.to(() => ProfileScreen());
         },
         child: Row(
           children: [

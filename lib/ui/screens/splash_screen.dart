@@ -5,7 +5,6 @@ import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
-import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,12 +36,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScreenBackground(
-        child: Center(
-          child: SvgPicture.asset(
-            AssetsPath.logoSvg,
-            width: 120,
-          ),
+      backgroundColor: Colors.teal[800],
+      body: Center(
+        child: SvgPicture.asset(
+          AssetsPath.newLogoSvg,
+          width: 200,
         ),
       ),
     );
